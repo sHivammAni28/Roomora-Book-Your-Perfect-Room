@@ -3,13 +3,6 @@ import { Link } from "react-router-dom";
 import { roomsDummyData, facilityIcons } from "../assets/assets";
 import { useAppContext } from "../context/AppContext";
 
-function normalizeRoomsResponse(data) {
-  // backend has typos: { sucess: true, rooms }
-  const success = data?.success ?? data?.sucess;
-  const rooms = data?.rooms;
-  return { success, rooms };
-}
-
 const RoomsListPage = () => {
   const { rooms: roomAPI } = useAppContext();
   const [rooms, setRooms] = React.useState([]);

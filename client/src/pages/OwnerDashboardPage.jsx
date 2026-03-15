@@ -17,9 +17,9 @@ const StatCard = ({ icon, label, value }) => (
 );
 
 const OwnerDashboardPage = () => {
-  const { axios, getToken } = useAppContext();
+  const { bookings } = useAppContext();
 
-  const [data, setData] = useState(null);
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -28,11 +28,7 @@ const OwnerDashboardPage = () => {
       try {
         setLoading(true);
 
-        const token = await getToken();
-
-        const { data } = await axios.get("/api/bookings/hotel", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const data = await bookings.hotelDashboard();
 
         if (data.success) {
           setData(data.dashboardData);
@@ -106,8 +102,6 @@ const OwnerDashboardPage = () => {
             />
           </div>
 
-          <h2 className="mt-10 text-lg font-semibold">Recent bookings</h2>
-
           <h2 className="text-xl text-blue-950/70 font-medium mb-5 mt-10">
             Recent Bookings
           </h2>
@@ -135,33 +129,36 @@ const OwnerDashboardPage = () => {
               </thead>
 
               <tbody>
-                {(data.bookings || []).map((item) => (
-                  <tr key={item._id}>
-                    <td className="py-3 px-4 border-t border-gray-300">
-                      {item.user?.username || "Guest"}
-                    </td>
+                {(data.bookings || [])
+                  .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                  .slice(0, 10)
+                  .map((item) => (
+                    <tr key={item._id}>
+                      <td className="py-3 px-4 border-t border-gray-300">
+                        {item.user?.username || "Guest"}
+                      </td>
 
-                    <td className="py-3 px-4 text-gray-700 border-t border-gray-300 max-sm:hidden">
-                      {item.room?.roomType}
-                    </td>
+                      <td className="py-3 px-4 text-gray-700 border-t border-gray-300 max-sm:hidden">
+                        {item.room?.roomType}
+                      </td>
 
-                    <td className="py-3 px-4 text-gray-700 border-t border-gray-300 text-center">
-                      Rs {item.totalPrice}
-                    </td>
+                      <td className="py-3 px-4 text-gray-700 border-t border-gray-300 text-center">
+                        Rs {item.totalPrice}
+                      </td>
 
-                    <td className="py-3 px-4 border-t border-gray-300 flex">
-                      <button
-                        className={`py-1 px-3 text-xs rounded-full mx-auto ${
-                          item.isPaid
-                            ? "bg-green-200 text-green-600"
-                            : "bg-amber-200 text-yellow-600"
-                        }`}
-                      >
-                        {item.isPaid ? "Completed" : "Pending"}
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                      <td className="py-3 px-4 border-t border-gray-300 flex">
+                        <button
+                          className={`py-1 px-3 text-xs rounded-full mx-auto ${
+                            item.isPaid
+                              ? "bg-green-200 text-green-600"
+                              : "bg-amber-200 text-yellow-600"
+                          }`}
+                        >
+                          {item.isPaid ? "Completed" : "Pending"}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>

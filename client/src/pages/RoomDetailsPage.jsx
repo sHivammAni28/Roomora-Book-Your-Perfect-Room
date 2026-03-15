@@ -1,21 +1,16 @@
 import React from "react";
-import { Navigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
   roomsDummyData,
   facilityIcons,
   roomCommonData,
 } from "../assets/assets";
 import { useAppContext } from "../context/AppContext";
-
-// function normalizeRoomsResponse(data) {
-//   const success = data?.success ?? data?.sucess;
-//   const rooms = data?.rooms;
-//   return { success, rooms };
-// }
+import toast from "react-hot-toast";
 
 const RoomDetailsPage = () => {
   const { id } = useParams();
-  const { rooms } = useAppContext();
+  const { rooms, bookings, navigate } = useAppContext();
 
   const [room, setRoom] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
@@ -72,11 +67,24 @@ const RoomDetailsPage = () => {
       return;
     }
 
+    if (new Date(checkInDate) >= new Date(checkOutDate)) {
+      toast.error("Check-out must be after check-in");
+      return;
+    }
+
     setAvailabilityLoading(true);
     try {
-      // Backend expects: { room, checkInDate, checkOutdate }
-      // Use AppContext axios helper for bookings in next step; simulate available for demo
-      setIsAvailable(true);
+      const data = await bookings.checkAvailability({
+        room: room._id,
+        checkInDate,
+        checkOutDate,
+      });
+
+      if (data.success) {
+        setIsAvailable(data.isAvailable);
+      } else {
+        setAvailabilityError(data.message);
+      }
     } catch (e) {
       setAvailabilityError(e?.message || "Failed to check availability");
     } finally {
@@ -92,12 +100,26 @@ const RoomDetailsPage = () => {
       return;
     }
 
+    if (!isAvailable) {
+      toast.error("Please check availability first");
+      return;
+    }
+
     setBookingLoading(true);
     try {
-      // Backend expects: { room, checkInDate, checkOutDate, guests }
-      // Use AppContext axios helper for bookings in next step; simulate booking success
+      const data = await bookings.create({
+        room: room._id,
+        checkInDate,
+        checkOutDate,
+        guests,
+      });
+      if (!data.success) {
+        toast.error(data.message);
+      }
+
       setBookingResult("Booking created successfully");
-      Navigate("/bookings");
+      toast.success("Booking Successfully");
+      navigate("/bookings");
     } catch (e) {
       setBookingResult(e?.message || "Booking failed");
     } finally {
@@ -199,6 +221,7 @@ const RoomDetailsPage = () => {
               <div className="text-gray-600 mb-1">Check-in</div>
               <input
                 type="date"
+                min={new Date().toISOString().split("T")[0]}
                 className="w-full border rounded-xl px-3 py-2"
                 value={checkInDate}
                 onChange={(e) => setCheckInDate(e.target.value)}
@@ -209,6 +232,7 @@ const RoomDetailsPage = () => {
               <div className="text-gray-600 mb-1">Check-out</div>
               <input
                 type="date"
+                min={checkInDate || new Date().toISOString().split("T")[0]}
                 className="w-full border rounded-xl px-3 py-2"
                 value={checkOutDate}
                 onChange={(e) => setCheckOutDate(e.target.value)}
@@ -261,10 +285,6 @@ const RoomDetailsPage = () => {
             {bookingResult && (
               <div className="text-sm text-gray-700">{bookingResult}</div>
             )}
-          </div>
-
-          <div className="mt-5 text-xs text-gray-500">
-            After a successful booking, you can view it in /bookings.
           </div>
         </aside>
       </div>

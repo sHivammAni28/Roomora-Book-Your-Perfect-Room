@@ -25,9 +25,8 @@ export const registerHotel = async (req, res) => {
     res.json({
       success: true,
       message: "Hotel registered successfully",
-      hotel: newHotel,   // 🔥 return the created hotel
+      hotel: newHotel,
     });
-
   } catch (error) {
     res.json({ success: false, message: error.message });
   }

@@ -3,8 +3,7 @@ import toast from "react-hot-toast";
 import { useAppContext } from "../context/AppContext";
 
 const UserBookingsPage = () => {
-  const { axios, getToken } = useAppContext();
-
+  const { bookings: bookingAPI } = useAppContext();
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -15,11 +14,7 @@ const UserBookingsPage = () => {
         setLoading(true);
         setError("");
 
-        const token = await getToken();
-
-        const { data } = await axios.get("/api/bookings/user", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const data = await bookingAPI.listUserBookings();
 
         if (!data.success) {
           setError(data.message || "Failed to load bookings");
@@ -37,13 +32,11 @@ const UserBookingsPage = () => {
     };
 
     loadBookings();
-  }, []);
+  }, [bookingAPI]);
 
   return (
     <main className="px-4 md:px-16 lg:px-24 xl:px-32 py-8">
       <h1 className="text-2xl font-semibold">My bookings</h1>
-
-      <p className="text-sm text-gray-600 mt-1">View your recent bookings.</p>
 
       {loading && <div className="mt-6 text-gray-600">Loading bookings...</div>}
 

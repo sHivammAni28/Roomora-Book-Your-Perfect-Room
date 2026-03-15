@@ -81,10 +81,6 @@ export const AppProvider = ({ children }) => {
       const { data } = await api.get("/api/rooms");
       return data;
     },
-    // getById: async (id) => {
-    //   const { data } = await api.get(`/api/rooms/${id}`);
-    //   return data;
-    // },
     ownerRooms: async () => {
       const { data } = await api.get("/api/rooms/owner");
       return data;
@@ -121,7 +117,7 @@ export const AppProvider = ({ children }) => {
       });
       return data;
     },
-    myBookings: async () => {
+    listUserBookings: async () => {
       const { data } = await api.get("/api/bookings/user");
       return data;
     },
