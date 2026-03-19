@@ -1,7 +1,7 @@
-import transporter from "../configs/nodemailer.js";
 import Booking from "../models/Booking.js";
 import Hotel from "../models/Hotel.js";
 import Room from "../models/Room.js";
+import { sendMail } from "../utils/sendMail.js";
 
 // function to check availability of room
 const checkAvailability = async ({ checkInDate, checkOutDate, room }) => {
@@ -11,6 +11,7 @@ const checkAvailability = async ({ checkInDate, checkOutDate, room }) => {
 
     const booking = await Booking.findOne({
       room,
+      status: { $ne: "cancelled" },
       checkInDate: { $lt: checkOut },
       checkOutDate: { $gt: checkIn },
     });
@@ -101,26 +102,24 @@ export const createBooking = async (req, res) => {
       totalPrice,
     });
 
-    const mailoptions = {
-      from: `"Roomora : Book Your Perfect Room" <${process.env.SENDER_EMAIL}>`,
+    await sendMail({
       to: req.user?.email,
       subject: "Hotel Booking Details",
       html: `
-        <h2>Your Booking Details</h2>
-        <p>Dear ${req.user.username},</p>
-        <p>Thank you for your booking, your booking details</p>
-        <ul>
-          <li><strong>Booking ID:</strong> ${booking._id}</li>
-          <li><strong>Hotel Name:</strong> ${roomData.hotel.name}</li>
-          <li><strong>Location:</strong> ${roomData.hotel.address}</li>
-          <li><strong>Date:</strong> ${booking.checkInDate.toDateString()}</li>
-          <li><strong>Booking Amount:</strong> Rs: ${booking.totalPrice} /night</li>
-        </ul>
-        <p>We look forward to welcome you!</p>
-        <p>If you need to make any changes , feel free to contact us.</p>
-      `,
-    };
-    await transporter.sendMail(mailoptions);
+    <h2>Your Booking Details</h2>
+    <p>Dear ${req.user.username},</p>
+    <p>Thank you for your booking, your booking details</p>
+    <ul>
+      <li><strong>Booking ID:</strong> ${booking._id}</li>
+      <li><strong>Hotel Name:</strong> ${roomData.hotel.name}</li>
+      <li><strong>Location:</strong> ${roomData.hotel.address}</li>
+      <li><strong>Check In Date:</strong> ${booking.checkInDate.toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</li>
+      <li><strong>Check Out Date:</strong> ${booking.checkOutDate.toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</li>
+      <li><strong>Booking Amount:</strong> Rs: ${booking.totalPrice} /night</li>
+    </ul>
+    <p>We look forward to welcome you!</p>
+  `,
+    });
 
     res.json({
       success: true,
@@ -158,12 +157,16 @@ export const getHotelBookings = async (req, res) => {
       .populate("user", "username")
       .populate("room", "roomType price")
       .populate("hotel")
-      .sort({ createdAt: -1 })
-      .limit(10);
+      // .populate("bookingstatus")
+      .sort({ createdAt: -1 });
+    // .limit(10);
+
+    const validBookings = bookings.filter((b) => b.status !== "cancelled");
+
     // total bookings
-    const totalBookings = bookings.length;
+    const totalBookings = validBookings.length;
     //total revenue
-    const totalRevenue = bookings.reduce(
+    const totalRevenue = validBookings.reduce(
       (acc, booking) => acc + booking.totalPrice,
       0,
     );

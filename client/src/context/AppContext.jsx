@@ -121,6 +121,10 @@ export const AppProvider = ({ children }) => {
       const { data } = await api.get("/api/bookings/user");
       return data;
     },
+    cancel: async (bookingId) => {
+      const { data } = await api.put(`/api/bookings/cancel/${bookingId}`);
+      return data;
+    },
     hotelDashboard: async () => {
       const { data } = await api.get("/api/bookings/hotel");
       return data;

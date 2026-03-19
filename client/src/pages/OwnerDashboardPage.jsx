@@ -123,6 +123,10 @@ const OwnerDashboardPage = () => {
                   </th>
 
                   <th className="py-3 px-4 text-gray-800 font-medium text-center">
+                    Booking Status
+                  </th>
+
+                  <th className="py-3 px-4 text-gray-800 font-medium text-center">
                     Payment Status
                   </th>
                 </tr>
@@ -144,6 +148,18 @@ const OwnerDashboardPage = () => {
 
                       <td className="py-3 px-4 text-gray-700 border-t border-gray-300 text-center">
                         Rs {item.totalPrice}
+                      </td>
+
+                      <td className="py-3 px-4 border-t border-gray-300 text-center">
+                        <span
+                          className={`py-1 px-3 text-xs rounded-full ${
+                            item.status === "cancelled"
+                              ? "bg-amber-200 text-yellow-600"
+                              : "bg-green-200 text-green-600"
+                          }`}
+                        >
+                          {item.status === "cancelled" ? "Cancelled" : "Booked"}
+                        </span>
                       </td>
 
                       <td className="py-3 px-4 border-t border-gray-300 flex">
