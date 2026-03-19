@@ -17,23 +17,23 @@ const StatCard = ({ icon, label, value }) => (
 );
 
 const OwnerDashboardPage = () => {
-  const { bookings } = useAppContext();
+  const { bookings: bookingAPI } = useAppContext();
 
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const loadDashboard = async () => {
+    async function load() {
       try {
         setLoading(true);
 
-        const data = await bookings.hotelDashboard();
+        const res = await bookingAPI.hotelDashboard();
 
-        if (data.success) {
-          setData(data.dashboardData);
+        if (res.success) {
+          setData(res.dashboardData);
         } else {
-          setError(data.message);
+          setError(res.message);
         }
       } catch (err) {
         setError(err.response?.data?.message || err.message);
@@ -41,9 +41,9 @@ const OwnerDashboardPage = () => {
       } finally {
         setLoading(false);
       }
-    };
+    }
 
-    loadDashboard();
+    load();
   }, []);
 
   return (

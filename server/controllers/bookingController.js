@@ -1,3 +1,4 @@
+import transporter from "../configs/nodemailer.js";
 import Booking from "../models/Booking.js";
 import Hotel from "../models/Hotel.js";
 import Room from "../models/Room.js";
@@ -22,7 +23,6 @@ const checkAvailability = async ({ checkInDate, checkOutDate, room }) => {
 };
 
 // api to check avaialability of rooms
-// post /api/bookings/check-availability
 
 export const checkAvailabilityAPI = async (req, res) => {
   try {
@@ -39,7 +39,6 @@ export const checkAvailabilityAPI = async (req, res) => {
 };
 
 // api to create new bookings
-// post /api/bookings//book
 
 export const createBooking = async (req, res) => {
   try {
@@ -59,7 +58,6 @@ export const createBooking = async (req, res) => {
 
     // get total price from room
     const roomData = await Room.findById(room).populate("hotel");
-    console.log("ROOM HOTEL ID:", roomData.hotel._id);
     if (!roomData) {
       return res.json({
         success: false,
@@ -103,6 +101,27 @@ export const createBooking = async (req, res) => {
       totalPrice,
     });
 
+    const mailoptions = {
+      from: `"Roomora : Book Your Perfect Room" <${process.env.SENDER_EMAIL}>`,
+      to: req.user?.email,
+      subject: "Hotel Booking Details",
+      html: `
+        <h2>Your Booking Details</h2>
+        <p>Dear ${req.user.username},</p>
+        <p>Thank you for your booking, your booking details</p>
+        <ul>
+          <li><strong>Booking ID:</strong> ${booking._id}</li>
+          <li><strong>Hotel Name:</strong> ${roomData.hotel.name}</li>
+          <li><strong>Location:</strong> ${roomData.hotel.address}</li>
+          <li><strong>Date:</strong> ${booking.checkInDate.toDateString()}</li>
+          <li><strong>Booking Amount:</strong> Rs: ${booking.totalPrice} /night</li>
+        </ul>
+        <p>We look forward to welcome you!</p>
+        <p>If you need to make any changes , feel free to contact us.</p>
+      `,
+    };
+    await transporter.sendMail(mailoptions);
+
     res.json({
       success: true,
       message: "Booking created successfully",
@@ -115,7 +134,6 @@ export const createBooking = async (req, res) => {
 };
 
 // api to get all booking for a user
-// get /api/bookings/user
 export const getUserBookings = async (req, res) => {
   try {
     const user = req.user._id;
@@ -130,14 +148,16 @@ export const getUserBookings = async (req, res) => {
 
 export const getHotelBookings = async (req, res) => {
   try {
-    console.log("OWNER ID:", req.user._id);
     const hotel = await Hotel.findOne({ owner: req.user._id });
-    console.log("HOTEL FROM OWNER:", hotel._id);
+
     if (!hotel) {
       return res.json({ success: false, message: "No hotel found" });
     }
-    const bookings = await Booking.find({ hotel: hotel._id })
-      .populate("room hotel user")
+
+    const bookings = await Booking.find({ hotel: hotel._id.toString() })
+      .populate("user", "username")
+      .populate("room", "roomType price")
+      .populate("hotel")
       .sort({ createdAt: -1 })
       .limit(10);
     // total bookings

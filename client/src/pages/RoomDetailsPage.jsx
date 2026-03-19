@@ -113,15 +113,19 @@ const RoomDetailsPage = () => {
         checkOutDate,
         guests,
       });
-      if (!data.success) {
-        toast.error(data.message);
-      }
 
-      setBookingResult("Booking created successfully");
-      toast.success("Booking Successfully");
-      navigate("/bookings");
-    } catch (e) {
-      setBookingResult(e?.message || "Booking failed");
+      // ✅ Handle response properly
+      if (data.success) {
+        setBookingResult("Booking created successfully");
+        toast.success(data.message || "Booking successful");
+        navigate("/bookings");
+      } else {
+        toast.error(data.message || "Room not available");
+        setBookingResult(data.message || "Booking failed");
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Something went wrong");
+      setBookingResult(err?.message || "Booking failed");
     } finally {
       setBookingLoading(false);
     }

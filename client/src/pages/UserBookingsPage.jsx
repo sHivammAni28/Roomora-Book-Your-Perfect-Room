@@ -80,7 +80,7 @@ const UserBookingsPage = () => {
 
               <div className="text-sm">
                 <div className="text-gray-500">Total</div>
-                <div className="font-semibold">${b.totalPrice}</div>
+                <div className="font-semibold">Rs-{b.totalPrice}</div>
               </div>
             </div>
 

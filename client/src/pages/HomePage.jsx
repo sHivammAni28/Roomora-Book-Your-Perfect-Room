@@ -1,11 +1,16 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { assets, cities, exclusiveOffers, testimonials } from '../assets/assets'
+import React from "react";
+import { Link } from "react-router-dom";
+import {
+  assets,
+  cities,
+  exclusiveOffers,
+  testimonials,
+} from "../assets/assets";
 
 const HomePage = () => {
   return (
     <main className="px-4 md:px-16 lg:px-24 xl:px-32 py-8">
-      <section className="grid lg:grid-cols-2 gap-8 items-center">
+      <section className="grid lg:grid-cols-2 gap-8 items-stretch">
         <div>
           <h1 className="text-3xl md:text-5xl font-semibold leading-tight">
             Find your next stay
@@ -27,7 +32,10 @@ const HomePage = () => {
             <div className="text-sm text-gray-500 mb-2">Popular cities</div>
             <div className="flex flex-wrap gap-2">
               {cities.map((c) => (
-                <span key={c} className="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-sm">
+                <span
+                  key={c}
+                  className="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-sm"
+                >
                   {c}
                 </span>
               ))}
@@ -35,11 +43,11 @@ const HomePage = () => {
           </div>
         </div>
 
-        <div className="relative">
+        <div className="relative h-full">
           <img
             src={assets.heroImage || assets.regImage}
             alt="hero"
-            className="w-full rounded-3xl object-cover"
+            className="w-full h-full rounded-3xl object-cover"
           />
         </div>
       </section>
@@ -68,9 +76,16 @@ const HomePage = () => {
         <h2 className="text-xl font-semibold">What guests say</h2>
         <div className="mt-4 grid md:grid-cols-3 gap-4">
           {testimonials.map((t) => (
-            <div key={t.id} className="rounded-2xl border border-gray-100 bg-white p-4">
+            <div
+              key={t.id}
+              className="rounded-2xl border border-gray-100 bg-white p-4"
+            >
               <div className="flex items-center gap-3">
-                <img src={t.image} alt={t.name} className="w-10 h-10 rounded-full object-cover" />
+                <img
+                  src={t.image}
+                  alt={t.name}
+                  className="w-10 h-10 rounded-full object-cover"
+                />
                 <div>
                   <div className="font-medium">{t.name}</div>
                   <div className="text-xs text-gray-500">{t.address}</div>
@@ -82,7 +97,7 @@ const HomePage = () => {
         </div>
       </section>
     </main>
-  )
-}
+  );
+};
 
-export default HomePage
+export default HomePage;
