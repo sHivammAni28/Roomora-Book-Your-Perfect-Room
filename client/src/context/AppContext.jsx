@@ -97,6 +97,10 @@ export const AppProvider = ({ children }) => {
       });
       return data;
     },
+    getByHotel: async (hotelId) => {
+      const { data } = await api.get(`/api/rooms/hotel/${hotelId}`);
+      return data;
+    },
   };
 
   const bookings = {

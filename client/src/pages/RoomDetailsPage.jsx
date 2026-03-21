@@ -9,7 +9,7 @@ import { useAppContext } from "../context/AppContext";
 import toast from "react-hot-toast";
 
 const RoomDetailsPage = () => {
-  const { id } = useParams();
+  const { hotelId, roomId } = useParams();
   const { rooms, bookings, navigate } = useAppContext();
 
   const [room, setRoom] = React.useState(null);
@@ -37,7 +37,7 @@ const RoomDetailsPage = () => {
         const data = await rooms.list();
 
         if (data.success) {
-          const foundRoom = data.rooms.find((r) => r._id === id);
+          const foundRoom = data.rooms.find((r) => r._id === roomId);
           setRoom(foundRoom || null);
         }
       } catch (e) {
@@ -55,7 +55,7 @@ const RoomDetailsPage = () => {
     return () => {
       cancelled = true;
     };
-  }, [id]);
+  }, [hotelId, roomId]);
 
   async function onCheckAvailability() {
     setAvailabilityError("");
@@ -114,7 +114,6 @@ const RoomDetailsPage = () => {
         guests,
       });
 
-      // ✅ Handle response properly
       if (data.success) {
         setBookingResult("Booking created successfully");
         toast.success(data.message || "Booking successful");
@@ -212,7 +211,7 @@ const RoomDetailsPage = () => {
             <div>
               <div className="text-sm text-gray-500">Price</div>
               <div className="text-2xl font-semibold">
-                ${room.pricePerNight}{" "}
+                Rs {room.pricePerNight}{" "}
                 <span className="text-sm font-normal text-gray-500">
                   / night
                 </span>

@@ -88,118 +88,115 @@ const OwnerAddRoomPage = () => {
   };
 
   return (
-    <main className="px-4 md:px-16 lg:px-24 xl:px-32 py-8">
-      <section className="rounded-3xl border border-gray-100 bg-white p-6">
-        <h1 className="text-2xl font-semibold">Add Room</h1>
+    <main className="min-h-screen px-6 md:px-16 lg:px-24 py-10 bg-gray-50">
+      <div className="max-w-5xl mx-auto">
+        <section className="bg-white p-8 rounded-2xl shadow-sm border">
+          {/* HEADER */}
+          <h1 className="text-3xl font-bold mb-2">Add New Room</h1>
+          <p className="text-sm text-gray-500 mb-6">
+            Fill in room details below
+          </p>
 
-        <form onSubmit={createRoom} className="mt-6">
-          {/* Room Type + Price Row */}
-
-          <div className="flex gap-6 mt-4">
-            {/* Room Type */}
-            <div className="max-w-48 w-full">
-              <p className="text-gray-800">Room Type</p>
-
-              <select
-                value={inputs.roomType}
-                onChange={(e) =>
-                  setInputs({ ...inputs, roomType: e.target.value })
-                }
-                className="border border-gray-300 mt-1 rounded p-2 w-full"
-              >
-                <option value="">Select Room Type</option>
-                <option value="Single Bed">Single Bed</option>
-                <option value="Double Bed">Double Bed</option>
-                <option value="Luxury Room">Luxury Room</option>
-                <option value="Family Suite">Family Suite</option>
-              </select>
-            </div>
-
-            {/* Price */}
-            <div className="max-w-48 w-full">
-              <p className="text-gray-800">
-                Price <span className="text-xs">/night</span>
-              </p>
-
-              <input
-                type="number"
-                placeholder="0"
-                className="border border-gray-300 mt-1 rounded p-2 w-full"
-                value={inputs.pricePerNight}
-                onChange={(e) =>
-                  setInputs({ ...inputs, pricePerNight: e.target.value })
-                }
-              />
-            </div>
-          </div>
-
-          {/* Amenities */}
-
-          <p className="text-gray-800 mt-4">Amenities</p>
-
-          <div className="flex flex-col flex-wrap mt-1 text-gray-500 max-w-sm">
-            {Object.keys(inputs.amenities).map((amenity, index) => (
-              <div key={index} className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id={`amenities${index}`}
-                  checked={inputs.amenities[amenity]}
-                  onChange={() =>
-                    setInputs({
-                      ...inputs,
-                      amenities: {
-                        ...inputs.amenities,
-                        [amenity]: !inputs.amenities[amenity],
-                      },
-                    })
-                  }
-                />
-
-                <label htmlFor={`amenities${index}`}>{amenity}</label>
-              </div>
-            ))}
-          </div>
-
-          {/* Images Upload */}
-
-          <p className="text-gray-800 mt-4">Images</p>
-
-          <div className="grid grid-cols-2 sm:flex gap-4 my-2 flex-wrap">
-            {Object.keys(images).map((key) => (
-              <label htmlFor={`roomImage${key}`} key={key}>
-                <img
-                  className="max-h-13 cursor-pointer opacity-80"
-                  src={
-                    images[key]
-                      ? URL.createObjectURL(images[key])
-                      : assets.uploadArea
-                  }
-                  alt=""
-                />
-
-                <input
-                  type="file"
-                  id={`roomImage${key}`}
-                  hidden
-                  accept="image/*"
+          <form onSubmit={createRoom}>
+            {/* ROOM TYPE + PRICE */}
+            <div className="grid sm:grid-cols-2 gap-6">
+              <div>
+                <p className="text-gray-800">Room Type</p>
+                <select
+                  value={inputs.roomType}
                   onChange={(e) =>
-                    setImages({ ...images, [key]: e.target.files[0] })
+                    setInputs({ ...inputs, roomType: e.target.value })
                   }
+                  className="w-full border rounded-lg px-4 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-black/20"
+                >
+                  <option value="">Select Room Type</option>
+                  <option value="Single Bed">Single Bed</option>
+                  <option value="Double Bed">Double Bed</option>
+                  <option value="Luxury Room">Luxury Room</option>
+                  <option value="Family Suite">Family Suite</option>
+                </select>
+              </div>
+
+              <div>
+                <p className="text-gray-800">
+                  Price <span className="text-xs">/night</span>
+                </p>
+                <input
+                  type="number"
+                  placeholder="0"
+                  value={inputs.pricePerNight}
+                  onChange={(e) =>
+                    setInputs({ ...inputs, pricePerNight: e.target.value })
+                  }
+                  className="w-full border rounded-lg px-4 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-black/20"
                 />
-              </label>
-            ))}
-          </div>
+              </div>
+            </div>
 
-          {/* Submit */}
+            {/* AMENITIES */}
+            <p className="text-lg font-semibold mt-6">Amenities</p>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-2 text-gray-600">
+              {Object.keys(inputs.amenities).map((amenity, index) => (
+                <div
+                  key={index}
+                  className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-lg"
+                >
+                  <input
+                    type="checkbox"
+                    id={`amenities${index}`}
+                    checked={inputs.amenities[amenity]}
+                    onChange={() =>
+                      setInputs({
+                        ...inputs,
+                        amenities: {
+                          ...inputs.amenities,
+                          [amenity]: !inputs.amenities[amenity],
+                        },
+                      })
+                    }
+                  />
+                  <label htmlFor={`amenities${index}`}>{amenity}</label>
+                </div>
+              ))}
+            </div>
 
-          <button
-            disabled={adding}
-            className="bg-black text-white rounded-full px-6 py-2.5 text-sm mt-6 hover:opacity-90 transition"
-          >
-            {adding ? "Adding..." : "Add Room"}
-          </button>
-        </form>
-      </section>
+            {/* IMAGES */}
+            <p className="text-lg font-semibold mt-6">Images</p>
+            <div className="flex flex-wrap gap-4 mt-2">
+              {Object.keys(images).map((key) => (
+                <label htmlFor={`roomImage${key}`} key={key}>
+                  <img
+                    src={
+                      images[key]
+                        ? URL.createObjectURL(images[key])
+                        : assets.uploadArea
+                    }
+                    alt=""
+                    className="w-20 h-20 object-cover rounded-lg border cursor-pointer hover:opacity-80"
+                  />
+                  <input
+                    type="file"
+                    id={`roomImage${key}`}
+                    hidden
+                    accept="image/*"
+                    onChange={(e) =>
+                      setImages({ ...images, [key]: e.target.files[0] })
+                    }
+                  />
+                </label>
+              ))}
+            </div>
+
+            {/* BUTTON */}
+            <button
+              disabled={adding}
+              className="w-full bg-black text-white py-3 rounded-lg mt-6 hover:bg-gray-800 transition"
+            >
+              {adding ? "Adding..." : "Add Room"}
+            </button>
+          </form>
+        </section>
+      </div>
     </main>
   );
 };

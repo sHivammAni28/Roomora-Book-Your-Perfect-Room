@@ -104,9 +104,9 @@ export const createBooking = async (req, res) => {
 
     await sendMail({
       to: req.user?.email,
-      subject: "Hotel Booking Details",
+      subject: "Booking Confirmed",
       html: `
-    <h2>Your Booking Details</h2>
+    <h2>Your booking has been successfully confirmed.</h2>
     <p>Dear ${req.user.username},</p>
     <p>Thank you for your booking, your booking details</p>
     <ul>

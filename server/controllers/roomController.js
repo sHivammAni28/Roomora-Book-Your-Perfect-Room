@@ -86,3 +86,15 @@ export const toggleRoomAvailability = async (req, res) => {
     res.json({ success: false, message: error.message });
   }
 };
+
+export const getRoomsByHotel = async (req, res) => {
+  try {
+    const { hotelId } = req.params;
+
+    const rooms = await Room.find({ hotel: hotelId.toString() });
+
+    res.json({ success: true, rooms });
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
+};

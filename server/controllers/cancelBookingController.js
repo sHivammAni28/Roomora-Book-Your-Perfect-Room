@@ -45,7 +45,7 @@ export const cancelBooking = async (req, res) => {
       to: req.user?.email,
       subject: "Booking Cancelled",
       html: `
-        <h2>Booking Cancelled</h2>
+        <h2>Your reservation has been cancelled. If you have any questions, contact support.</h2>
         <p>Dear ${req.user.username},</p>
         <p>Your booking has been successfully cancelled.</p>
 

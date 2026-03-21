@@ -1,9 +1,10 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { roomsDummyData, facilityIcons } from "../assets/assets";
 import { useAppContext } from "../context/AppContext";
 
 const RoomsListPage = () => {
+  const { id } = useParams();
   const { rooms: roomAPI } = useAppContext();
   const [rooms, setRooms] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
@@ -16,7 +17,7 @@ const RoomsListPage = () => {
       setLoading(true);
       setError("");
       try {
-        const data = await roomAPI.list();
+        const data = await roomAPI.getByHotel(id);
 
         if (data.success) {
           setRooms(data.rooms);
@@ -38,14 +39,13 @@ const RoomsListPage = () => {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [id]);
 
   return (
     <main className="px-4 md:px-16 lg:px-24 xl:px-32 py-8">
       <div className="flex items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold">Rooms</h1>
-          <p className="text-sm text-gray-600 mt-1">Browse available rooms.</p>
+          <h1 className="text-2xl font-semibold">Available Rooms</h1>
         </div>
       </div>
 
@@ -65,7 +65,7 @@ const RoomsListPage = () => {
         {rooms.map((r) => (
           <Link
             key={r._id}
-            to={`/rooms/${r._id}`}
+            to={`/hotels/${id}/room/${r._id}`}
             className="group rounded-2xl overflow-hidden border border-gray-100 bg-white hover:shadow-md transition"
           >
             <div className="h-44 bg-gray-100">
@@ -79,7 +79,10 @@ const RoomsListPage = () => {
               <div className="flex items-center justify-between gap-3">
                 <div className="font-medium">{r.roomType}</div>
                 <div className="text-sm font-semibold">
-                  ${r.pricePerNight}/night
+                  Rs {r.pricePerNight}{" "}
+                  <span className="text-sm font-normal text-gray-500">
+                    / night
+                  </span>
                 </div>
               </div>
 

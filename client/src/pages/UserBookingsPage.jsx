@@ -74,6 +74,14 @@ const UserBookingsPage = () => {
     return today < checkIn;
   };
 
+  const handlePayment = async () => {
+    const res = await axios.post("/api/payment/create-session", {
+      bookingId,
+    });
+
+    window.location.href = res.data.url;
+  };
+
   return (
     <main className="px-4 md:px-16 lg:px-24 xl:px-32 py-8">
       <h1 className="text-2xl font-semibold">My bookings</h1>
@@ -138,11 +146,21 @@ const UserBookingsPage = () => {
                   </span>
                 )}
 
-                {typeof b.isPaid === "boolean" && (
-                  <span className="px-2 py-1 rounded-full bg-gray-100">
-                    Paid: {b.isPaid ? "Yes" : "No"}
-                  </span>
-                )}
+                <button
+                  onClick={() => {
+                    if (!b.isPaid) {
+                      // call payment API or redirect
+                      console.log("Initiate payment for", b._id);
+                    }
+                  }}
+                  className={`px-3 py-1 rounded text-xs font-medium ${
+                    b.isPaid
+                      ? "bg-green-500 text-white cursor-default"
+                      : "bg-yellow-400 text-black hover:bg-yellow-500"
+                  }`}
+                >
+                  {b.isPaid ? "Paid" : "Pay Now"}
+                </button>
               </div>
 
               <div>

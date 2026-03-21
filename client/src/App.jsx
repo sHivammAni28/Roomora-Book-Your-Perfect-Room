@@ -5,11 +5,12 @@ import Navbar from "./components/Navbar";
 
 import HomePage from "./pages/HomePage";
 import RoomsListPage from "./pages/RoomsListPage";
+import HotelsListPage from "./pages/HotelsListPage";
 import RoomDetailsPage from "./pages/RoomDetailsPage";
 import UserBookingsPage from "./pages/UserBookingsPage";
 import OwnerDashboardPage from "./pages/OwnerDashboardPage";
 // import OwnerRoomsPage from './pages/OwnerRoomsPage'
-import UserProfilePage from "./pages/UserProfilePage";
+// import UserProfilePage from "./pages/UserProfilePage";
 import RegisterHotelPage from "./pages/RegisterHotelPage";
 import Footer from "./components/Footer";
 import { Toaster } from "react-hot-toast";
@@ -27,12 +28,15 @@ const App = () => {
         <Routes>
           <Route path="/" element={<HomePage />} />
 
-          {/* Navbar uses /rooms for "Hotels" link, backend list endpoint is /api/rooms */}
-          <Route path="/rooms" element={<RoomsListPage />} />
-          <Route path="/rooms/:id" element={<RoomDetailsPage />} />
+          <Route path="/hotels" element={<HotelsListPage />} />
+          <Route path="/hotels/:id" element={<RoomsListPage />} />
+          <Route
+            path="/hotels/:hotelId/room/:roomId"
+            element={<RoomDetailsPage />}
+          />
 
           <Route path="/bookings" element={<UserBookingsPage />} />
-          <Route path="/profile" element={<UserProfilePage />} />
+          {/* <Route path="/profile" element={<UserProfilePage />} /> */}
 
           <Route path="/register-hotel" element={<RegisterHotelPage />} />
 

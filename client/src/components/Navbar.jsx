@@ -27,7 +27,7 @@ const BookIcon = () => (
 const Navbar = () => {
   const navLinks = [
     { name: "Home", path: "/" },
-    { name: "Hotels", path: "/rooms" },
+    { name: "Hotels", path: "/hotels" },
     { name: "Experience", path: "/" },
     { name: "About", path: "/" },
   ];
