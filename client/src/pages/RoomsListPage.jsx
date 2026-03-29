@@ -62,53 +62,59 @@ const RoomsListPage = () => {
       )}
 
       <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        {rooms.map((r) => (
-          <Link
-            key={r._id}
-            to={`/hotels/${id}/room/${r._id}`}
-            className="group rounded-2xl overflow-hidden border border-gray-100 bg-white hover:shadow-md transition"
-          >
-            <div className="h-44 bg-gray-100">
-              <img
-                src={r.images?.[0]}
-                alt={r.roomType}
-                className="h-44 w-full object-cover group-hover:scale-[1.02] transition"
-              />
-            </div>
-            <div className="p-4">
-              <div className="flex items-center justify-between gap-3">
-                <div className="font-medium">{r.roomType}</div>
-                <div className="text-sm font-semibold">
-                  Rs {r.pricePerNight}{" "}
-                  <span className="text-sm font-normal text-gray-500">
-                    / night
-                  </span>
+        {rooms
+          .filter((r) => r.isAvailable)
+          .map((r) => (
+            <Link
+              key={r._id}
+              to={`/hotels/${id}/room/${r._id}`}
+              className="group rounded-2xl overflow-hidden border border-gray-100 bg-white hover:shadow-md transition"
+            >
+              <div className="h-44 bg-gray-100">
+                <img
+                  src={r.images?.[0]}
+                  alt={r.roomType}
+                  className="h-44 w-full object-cover group-hover:scale-[1.02] transition"
+                />
+              </div>
+              <div className="p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="font-medium">{r.roomType}</div>
+                  <div className="text-sm font-semibold">
+                    Rs {r.pricePerNight}{" "}
+                    <span className="text-sm font-normal text-gray-500">
+                      / night
+                    </span>
+                  </div>
                 </div>
-              </div>
 
-              <div className="text-sm text-gray-600 mt-1">
-                {r.hotel?.name ? r.hotel.name : "Hotel"}
-                {r.hotel?.city ? ` • ${r.hotel.city}` : ""}
-              </div>
+                <div className="text-sm text-gray-600 mt-1">
+                  {r.hotel?.name ? r.hotel.name : "Hotel"}
+                  {r.hotel?.city ? ` • ${r.hotel.city}` : ""}
+                </div>
 
-              <div className="mt-3 flex flex-wrap gap-2">
-                {(r.amenities || []).slice(0, 3).map((a) => (
-                  <span
-                    key={a}
-                    className="inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-700"
-                  >
-                    {facilityIcons[a] ? (
-                      <img src={facilityIcons[a]} alt="" className="w-3 h-3" />
-                    ) : null}
-                    {a}
-                  </span>
-                ))}
-              </div>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {(r.amenities || []).slice(0, 3).map((a) => (
+                    <span
+                      key={a}
+                      className="inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-700"
+                    >
+                      {facilityIcons[a] ? (
+                        <img
+                          src={facilityIcons[a]}
+                          alt=""
+                          className="w-3 h-3"
+                        />
+                      ) : null}
+                      {a}
+                    </span>
+                  ))}
+                </div>
 
-              <div className="mt-4 text-sm text-gray-700">View details →</div>
-            </div>
-          </Link>
-        ))}
+                <div className="mt-4 text-sm text-gray-700">View details →</div>
+              </div>
+            </Link>
+          ))}
       </div>
     </main>
   );

@@ -33,17 +33,12 @@ const OwnerAddRoomPage = () => {
     e.preventDefault();
 
     if (!inputs.roomType) {
-      toast.error("Select room type");
+      toast.error("Please select room type");
       return;
     }
 
     if (!inputs.pricePerNight || inputs.pricePerNight <= 0) {
-      toast.error("Enter valid price");
-      return;
-    }
-
-    if (!inputs.amenities) {
-      toast.error("PLease select at least one amenities");
+      toast.error("Please enter valid price");
       return;
     }
 
@@ -55,6 +50,11 @@ const OwnerAddRoomPage = () => {
     const selectedAmenities = Object.keys(inputs.amenities).filter(
       (key) => inputs.amenities[key],
     );
+
+    if (selectedAmenities.length === 0) {
+      toast.error("Please select at least one amenity");
+      return;
+    }
 
     fd.append("amenities", JSON.stringify(selectedAmenities));
 
@@ -79,7 +79,7 @@ const OwnerAddRoomPage = () => {
 
       toast.success("Room added successfully");
 
-      navigate("/owner");
+      navigate("/owner/manage-rooms");
     } catch (err) {
       toast.error(err.response?.data?.message || err.message);
     } finally {
